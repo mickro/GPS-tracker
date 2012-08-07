@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="./css/gps.css" />
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script> 
+    <script type="text/javascript">
+  
+      const TIMER = 2000;
+      const TIMER_FADE = 400;
+      var currentLongitude = 0;
+      var turnEarthIntervalID = -1;
+      var previousPosition = null;
+      var finalZoom = 1;
+      var map;
+      var map2;
+      var marker;
+      var marker2;
+    
+      function initialize() {
+	map = new google.maps.Map(document.getElementById("map_canvas"), {
+	      zoom: finalZoom + 1,
+	      center: new google.maps.LatLng(0, currentLongitude),
+	      mapTypeId: google.maps.MapTypeId.SATELLITE,
+	      zoomControl: false,
+	      backgroundColor: 'transparent',
+	      disableDefaultUI: true,
+	      disableDoubleClickZoom: true,
+	      draggable: false
+	      
+	    });
+
+	map2 = new google.maps.Map(document.getElementById("map_canvas2"), {
+	      zoom: finalZoom,
+	      center: new google.maps.LatLng(0, currentLongitude),
+	      mapTypeId: google.maps.MapTypeId.SATELLITE,
+	      zoomControl: false,
+	      backgroundColor: 'transparent',
+	      disableDefaultUI: true,
+	      disableDoubleClickZoom: true,
+	      draggable: false
+	    });
+
+	turnEarthIntervalID = setInterval( turnEarth, 3000 );
+      }
+
+      
+      function turnEarth( ) {
+	  latitude = Math.random() * 180 - 90;
+	  longitude = currentLongitude + Math.random() * 90 - 45;
+	  panTo( 0, longitude );
+	  currentLongitude = longitude;
+      }
+	
+      if (navigator.geolocation) {
+	var watchId = navigator.geolocation.watchPosition(successCallback, null, {enableHighAccuracy:true});
+      } else {
+	alert("Geolocalisation impossible.");
+      }
+
+      function zoomTo( zoom ) {
+	finalZoom = Math.round( zoom );
+	setTimeout( zoomToNext2, TIMER );
+      }
+
+      function isZoomGood( ) {
+	return map2.getZoom() == finalZoom || map.getZoom() == finalZoom;
+      }
+
+      function zoomToNext( ) {
+	$( "#map_canvas2" ).fadeIn();
+	$( "#map_canvas" ).fadeOut();
+
+	setTimeout( function() {
+	  map.setZoom( map.getZoom() + 2 );
+	  }, TIMER_FADE );
+
+	if ( isZoomGood( ) ) {
+	  setTimeout( function() {
+	    $( "#map_canvas" ).fadeIn();
+	    $( "#map_canvas2" ).fadeOut();
+	    map.setMapTypeId( google.maps.MapTypeId.HYBRID );
+	    marker.setVisible( true );
+	 }, TIMER );
+	    
+	} else {
+	  setTimeout( zoomToNext2, TIMER );
+	}
+      }
+
+      function zoomToNext2( ) {
+	$( "#map_canvas" ).fadeIn();
+	$( "#map_canvas2" ).fadeOut();
+
+	setTimeout( function() {
+	  map2.setZoom( map2.getZoom() + 2 );
+	  }, TIMER_FADE );
+
+	if ( isZoomGood( ) )  {
+	  setTimeout( function() {
+	    $( "#map_canvas2" ).fadeIn();
+	    $( "#map_canvas" ).fadeOut();
+	    map2.setMapTypeId( google.maps.MapTypeId.HYBRID );
+	    marker2.setVisible( true );
+	  }, TIMER );
+	 } else {
+	    setTimeout( zoomToNext, TIMER );
+	}
+      }
+
+      function panTo( latitude, longitude) {
+	map.panTo(new google.maps.LatLng(latitude, longitude));
+	map2.panTo(new google.maps.LatLng(latitude, longitude));
+      }
+      
+	
+      function successCallback(position){
+	clearInterval( turnEarthIntervalID );
+	panTo( position.coords.latitude, position.coords.longitude );
+
+	marker = new google.maps.Marker({
+	  position: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
+	  map: map,
+	  visible: false
+	});
+
+	marker2 = new google.maps.Marker({
+	  position: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
+	  map: map2,
+	  visible: false
+	});
+	
+	if (previousPosition){
+	  var newLineCoordinates = [
+	    new google.maps.LatLng(previousPosition.coords.latitude, previousPosition.coords.longitude),
+	    new google.maps.LatLng(position.coords.latitude, position.coords.longitude)];
+	  
+	  var newLine = new google.maps.Polyline({
+	    path: newLineCoordinates,       
+	    strokeColor: "#FF0000",
+	    strokeOpacity: 1.0,
+	    strokeWeight: 2
+	  });
+	  newLine.setMap( map );
+	  newLine.setMap( map2 );
+
+	} else {
+	  zoomTo( 18 );
+	}
+	previousPosition = position;
+      };   
+    </script>
+  </head>
+  
+  <body onload="initialize()">
+    <div id='background-content-effect'>
+      <div id='background-content'>
+	<div id="content">
+	  <div id="map_canvas"></div>
+	  <div id="map_canvas2"></div>
+	</div>
+	<div id="content2">
+	  <div id='hud'>
+	    <div class='title'>GPS</div> tracker
+	  </div>
+	  <div id='credits'>HTML5 + CSS3 + jQuery + GoogleMap in 2012 by <a href='http://nz.linkedin.com/in/mickro/en'>Mickaël Foucaux</a></div>
+	<div>
+      </div>
+    </div>
+  </body>
+</html>

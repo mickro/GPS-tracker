@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style type="text/css">
+  body{
+    background-color:#AAF;
+  }
+  #main{
+    width:400px;
+    padding:30px;
+    margin:auto;
+    background-color:#EEE;
+  }
+  ul{
+    list-style-type:none;
+  }
+  h1{
+    margin-top:0;
+  }
+  </style>
+  <script type="text/javascript">
+ 
+    function startWatch(){
+      if (navigator.geolocation)
+        var watchId = navigator.geolocation.watchPosition(successCallback,
+                                  errorCallback,
+                                  {enableHighAccuracy:true,
+                                  timeout:10000,
+                                  maximumAge:0});
+      else
+        alert("Votre navigateur ne prend pas en compte la géolocalisation HTML5");
+    }
+     
+    function stopWatch(){
+      navigator.geolocation.clearWatch(watchId);
+    }    
+     
+    function successCallback(position){
+      document.getElementById("lat").innerHTML = position.coords.latitude;
+      document.getElementById("long").innerHTML = position.coords.longitude;
+      document.getElementById("prec").innerHTML = position.coords.accuracy;
+      document.getElementById("alt").innerHTML = position.coords.altitude;
+      document.getElementById("precalt").innerHTML = position.coords.altitudeAccuracy;
+      document.getElementById("angle").innerHTML = position.coords.heading;
+      document.getElementById("speed").innerHTML = position.coords.speed;
+      document.getElementById("time").innerHTML = new Date(position.timestamp);
+    }; 
+ 
+    function errorCallback(error){
+      switch(error.code){
+        case error.PERMISSION_DENIED:
+          alert("L'utilisateur n'a pas autorisé l'accès à sa position");
+          break;     
+        case error.POSITION_UNAVAILABLE:
+          alert("L'emplacement de l'utilisateur n'a pas pu être déterminé");
+          break;
+        case error.TIMEOUT:
+          alert("Le service n'a pas répondu à temps");
+          break;
+        }
+    };
+ 
+  </script>
+</head>
+ 
+<body>
+<div id="main">
+  <ul>
+    <li>Latitude : <span id="lat"></span></li>
+    <li>Longitude : <span id="long"></span></li>
+    <li>Précision : <span id="prec"></span></li>
+    <li>Altitude : <span id="alt"></span></li>
+    <li>Précision altitude : <span id="precalt"></span></li>
+    <li>Angle par rapport au Nord : <span id="angle"></span></li>
+    <li>Vitesse : <span id="speed"></span></li>
+    <li>Date - Heure : <span id="time"></span></li>
+  </ul>
+  <a href="#" onclick="startWatch()">Démarrer</a>
+  <a href="#" onclick="stopWatch()">Arrêter</a>
+</div>
+</body>
+ 
+</html>

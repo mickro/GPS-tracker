@@ -1,0 +1,98 @@
+@font-face {
+  font-family: Clubland;
+  src: url('../font/Clubland.ttf');
+}
+
+html {
+  height: 100%
+}
+
+body {
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+  background-color: #404040;
+}
+
+#background-content-effect {
+  border-top: thin solid #EEE;
+  border-bottom: thin solid #EEE;
+  height: 406px;
+  width: 100%;
+  position:absolute; 
+  top: 50%;
+  margin: 0px;
+  padding: 0px;
+  left: 0px;
+  margin-top: -203px;
+}
+
+#background-content {
+  height: 400px;
+  width: 100%;
+  background-color: black;
+  border-top: 3px solid #AAA;
+  border-bottom: 3px solid #AAA;
+}
+
+#map_canvas, #map_canvas2 {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 540px;
+  height: 400px;
+}
+
+#content {
+  position: absolute;
+  left: 50%;
+  top: 3px;
+  width: 540px;
+  height:398px;
+  overflow: hidden;
+   z-index: 0;
+  margin-left: -270px;
+}
+
+#content2 {
+  position: absolute;
+  left: 50%;
+  margin-left: -270px;
+  top: 3px;
+  width: 540px;
+  height:400px;
+  z-index: 1;
+  background-image: url('../img/overlay.png');
+}
+
+#hud {
+  color: #56FF89;
+  width: 540px;
+  height:400px;
+ font-family: "Clubland", "Times New Roman",Georgia, Serif;
+ margin-top: 9px;
+ margin-left: 25px;
+ font-size: small;
+}
+
+.title {
+ font-size: 31px;
+ margin-bottom: -5px;
+}
+
+a, a:hover, a:visited, a:link, a:active {
+  text-decoration: none;
+  color: #CCCCCC;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+#credits {
+  color: grey;
+  font-size: xx-small;
+  text-align: center; 
+  width: 540px;
+ font-family: "arial", "sans-serif";
+}
